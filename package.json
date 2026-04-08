@@ -1,0 +1,50 @@
+{
+  "name": "openclaw-personal-claw",
+  "version": "1.0.0",
+  "description": "Adaptive personalization plugin for OpenClaw - learns user preferences through conversation using Thompson Sampling",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "openclaw": {
+    "type": "plugin",
+    "version": ">=2026.3.0",
+    "capabilities": [
+      "tools",
+      "skills"
+    ]
+  },
+  "keywords": [
+    "openclaw-plugin",
+    "personalization",
+    "adaptive",
+    "bandit",
+    "thompson-sampling",
+    "preference-learning"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "oxlint": "^0.16.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
