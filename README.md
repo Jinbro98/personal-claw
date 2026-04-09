@@ -6,6 +6,8 @@ No configuration. No training. Just chat, and it adapts.
 
 **personal-claw** observes your conversation patterns and automatically adjusts response style across 12 dimensions — length, tone, format, depth, and more. It uses a Thompson Sampling bandit to find the optimal balance between exploiting known preferences and exploring new ones.
 
+**[한국어](./README.ko.md)**
+
 ---
 
 ## How It Works
