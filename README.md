@@ -1,181 +1,255 @@
 # personal-claw
 
-> OpenClaw 플러그인 — 당신의 AI가 당신을 알아갑니다
+> OpenClaw plugin — your AI learns how you like to talk.
 
-매번 "짧게 해줘", "자세히 설명해줘"라고 말하고 싶지 않으셨나요?
+No configuration. No training. Just chat, and it adapts.
 
-**personal-claw**는 대화하면서 자연스럽게 당신의 선호를 학습합니다. 설정할 것도, 가르칠 것도 없습니다. 그냥 대화하세요.
-
----
-
-## 핵심 기능
-
-**설정하지 마세요. 그냥 대화하세요.**
-
-대화하면서 자동으로 학습하는 12가지 개인화 차원:
-
-| 차원 | 예시 |
-|------|------|
-| 응답 길이 | "짧게" → 간결하게, "풀어서" → 자세하게 |
-| 말투 | 편한 말투 ↔ 정중한 말투 |
-| 출력 형식 | 텍스트 ↔ 마크다운 ↔ 코드 위주 |
-| 설명 깊이 | 핵심만 ↔ 단계별 ↔ 심층 분석 |
-| 코드 예시 | 설명만 ↔ 코드도 같이 |
-| ...그 외 7개 차원 | 언어, 이모지, 참조 스타일 등 |
+**personal-claw** observes your conversation patterns and automatically adjusts response style across 12 dimensions — length, tone, format, depth, and more. It uses a Thompson Sampling bandit to find the optimal balance between exploiting known preferences and exploring new ones.
 
 ---
 
-## 작동 방식
+## How It Works
 
 ```
-Phase 1: 패턴 분석
-  처음 대화하면서 자동으로 언어, 길이, 톤을 추론합니다.
-
-Phase 2: 선호 수집
-  가끔 "이런 식으로 답할까요?"라고 자연스럽게 물어봅니다.
-
-Phase 3: 자동 최적화
-  Thompson Sampling 알고리즘으로 최적의 응답 스타일을 찾아갑니다.
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  Phase 1    │────▶│  Phase 2    │────▶│  Phase 3    │
+│  Pattern    │     │  A/B Test   │     │  Bandit     │
+│  Analysis   │     │  Collection │     │  Optimization│
+└─────────────┘     └─────────────┘     └─────────────┘
+   ~20 msgs           ~10 choices         Continuous
+   Passive observe     Natural prompts     Auto-adaptive
 ```
 
-사용자 모르게 학습이 진행됩니다. "짧게 해줘"라고 직접 말해도 즉시 반영됩니다.
+**Phase 1 — Pattern Analysis** (first ~20 messages)
+Passively observes your language, sentence length, tone, and format preferences. No interaction required.
+
+**Phase 2 — A/B Collection** (next ~10 choices)
+Occasionally offers natural-sounding choices: "Want me to keep it concise, or go deeper?" Your selections train the model.
+
+**Phase 3 — Bandit Optimization** (ongoing)
+Thompson Sampling algorithm automatically selects the best response style per dimension. No user intervention needed.
+
+Explicit directives (e.g. "be concise", "explain in Korean") are applied immediately at any phase.
 
 ---
 
-## 주제별 학습
+## Personalization Dimensions
 
-코딩할 때는 코드를 자세히 보여주고, 일반 질문에는 간결하게 답합니다.
-
-6가지 주제를 자동으로 감지해서 각각 다른 프로필을 적용합니다:
-
-- 코딩 (코드, 디버그, API)
-- 분석 (데이터, 통계, 비교)
-- 창작 (글쓰기, 디자인)
-- 학습 (공부, 설명)
-- 기획 (계획, 설계)
-- 일반 대화
+| Dimension | What it controls | Example values |
+|-----------|-----------------|----------------|
+| `response_length` | How verbose | concise, balanced, detailed |
+| `tone` | Formality level | casual, semi-formal, formal |
+| `output_format` | Primary format | text, markdown, code |
+| `topic_depth` | Explanation depth | surface, practical, deep |
+| `language` | Response language | ko, en, auto |
+| `code_examples` | Code preference | none, inline, full |
+| `explanation_style` | How to explain | analogy, direct, step-by-step |
+| `emoji_usage` | Emoji frequency | none, minimal, moderate |
+| `meta_explanation` | Explain the approach | off, brief, detailed |
+| `reference_style` | Citation style | none, inline, footnotes |
+| `question_handling` | Clarification style | assume, ask, both |
+| `error_detail` | Error verbosity | brief, moderate, full-stack |
 
 ---
 
-## 설치
+## Topic-Aware Profiles
+
+personal-claw detects conversation topics and maintains separate preference profiles:
+
+- **coding** — code, debug, API, programming
+- **analysis** — data, statistics, comparison
+- **writing** — essays, design, creative
+- **learning** — study, explanation, tutorials
+- **planning** — strategy, architecture, design
+- **general** — everything else
+
+Example: you might prefer detailed code explanations but concise general answers. The plugin handles this automatically.
+
+---
+
+## Installation
+
+### Prerequisites
+
+- [OpenClaw](https://docs.openclaw.ai) >= 2026.3.0
+- Node.js >= 22.0.0
+
+### Install via CLI
 
 ```bash
-openclaw plugins install openclaw-personal-claw
+openclaw plugins install Jinbro98/openclaw-personal-claw
 ```
 
-설치 후 대화를 시작하면 자동으로 학습이 시작됩니다. 별도 설정 불필요.
+Restart the gateway after installation:
+
+```bash
+openclaw gateway restart
+```
+
+### Verify installation
+
+```bash
+openclaw plugins list | grep personal-claw
+openclaw skills list | grep personal-claw
+```
+
+Expected output: `loaded` (plugin) and `ready` (skill).
+
+### Install from source
+
+```bash
+git clone https://github.com/Jinbro98/openclaw-personal-claw.git
+cd openclaw-personal-claw
+npm install
+npm run build
+openclaw plugins install .
+openclaw gateway restart
+```
 
 ---
 
-## Commands
+## Usage
 
-| 명령어 | 설명 |
-|--------|------|
-| `personal-claw-status` | 현재 학습 상태 확인 |
-| `personal-claw-reset` | 프로필 초기화 (처음부터 다시 학습) |
-| `personal-claw-export` | 프로필 백업 (JSON) |
+Once installed, personal-claw activates automatically on all conversations. No configuration needed.
 
----
+### Commands
 
-## 학습 상태 확인
+| Command | Description |
+|---------|-------------|
+| `personal-claw-status` | Show current learning state and profile |
+| `personal-claw-reset` | Reset all learned preferences (starts over) |
+| `personal-claw-export` | Export profile as JSON for backup |
 
-`personal-claw-status`를 실행하면 현재 학습 상태를 볼 수 있습니다:
+### Status output example
 
 ```
-Phase: ab (선호 수집 중)
+Phase: ab (collecting preferences)
 
-학습 현황:
-  총 대화: 42회
-  긍정 신호: 15개
-  부정 신호: 3개
+Learning progress:
+  Total messages: 42
+  Positive signals: 15
+  Negative signals: 3
 
-차원별 학습:
-  응답 길이  [████████░░] 간결하게 (확신도 78%)
-  말투       [██████░░░░] 편하게   (확신도 62%)
-  출력 형식  [█████████░] 마크다운 (확신도 89%)
+Dimensions:
+  response_length  [████████░░] concise  (confidence 78%)
+  tone             [██████░░░░] casual   (confidence 62%)
+  output_format    [█████████░] markdown (confidence 89%)
   ...
 ```
 
-확신도가 높을수록 더 정확하게 맞춥니다.
+Higher confidence = more accurate personalization.
 
 ---
 
-## 예시
-
-### 자동 학습
+## Architecture
 
 ```
-[사용자] 파이썬으로 파일 읽기 어떻게 해?
-[어시스턴트] 간결하게 설명드릴게요.
-with open('file.txt', 'r') as f:
-    content = f.read()
-
-[사용자] 고마워!
-[어시스턴트] (긍정 신호 감지 → 현재 스타일 유지)
+openclaw-personal-claw/
+├── src/
+│   ├── index.ts              # Plugin entry point (hooks + tools)
+│   ├── types.ts              # Core type definitions
+│   ├── core/
+│   │   ├── bandit.ts         # Thompson Sampling engine
+│   │   ├── profile.ts        # Profile load/save/update
+│   │   ├── phase.ts          # Phase transition logic
+│   │   ├── signals.ts        # Signal detection (regex-based)
+│   │   ├── session-state.ts  # Per-session message tracking
+│   │   ├── ab-suggester.ts   # A/B suggestion generator
+│   │   └── topic-detector.ts # Topic classification
+│   ├── analyzer/
+│   │   ├── conversation.ts   # Conversation length analysis
+│   │   ├── language.ts       # Language detection (ko/en)
+│   │   └── sentiment.ts      # Sentiment analysis
+│   ├── injector/
+│   │   ├── prompt-builder.ts # System prompt generation
+│   │   └── agents-md.ts      # AGENTS.md section updater
+│   ├── tools/
+│   │   ├── status-tool.ts    # personal-claw-status
+│   │   ├── reset-tool.ts     # personal-claw-reset
+│   │   └── export-tool.ts    # personal-claw-export
+│   └── utils/
+│       ├── constants.ts      # Dimension definitions, defaults
+│       └── file-io.ts        # JSON file I/O with corruption handling
+├── skills/personal-claw/
+│   └── SKILL.md              # OpenClaw skill definition
+├── tests/                    # Vitest unit tests (50 tests)
+└── docs/solutions/           # Bug fixes and best practices
 ```
 
-### 명시적 피드백
+### Plugin Hooks
 
-```
-[사용자] 앞으로 코드 예시는 풀스크립트로 보여줘
-[어시스턴트] (명시적 지시 감지 → code_examples: full-scripts 즉시 반영)
-```
+personal-claw implements three OpenClaw plugin hooks:
 
-### A/B 선택지
+| Hook | When | What |
+|------|------|------|
+| `onMessage` | Every user message | Detects signals, updates profile, saves |
+| `getSystemPromptAddition` | Every turn | Injects learned preferences into system prompt |
+| `onSessionEnd` | Session close | Updates stats, refreshes AGENTS.md |
 
-```
-[어시스턴트] 참고로 앞으로는 간결하게 답할까요, 지금처럼 자세하게 답할까요?
-[사용자] 간결하게
-[어시스턴트] (response_length: concise 즉시 반영, 확신도 80%)
-```
+The `getSystemPromptAddition` hook is the primary control mechanism — it injects personalization instructions into the system prompt so the LLM naturally follows learned preferences.
 
 ---
 
-## 프라이버시
+## Development
 
-**100% 로컬. 외부 전송 없음.**
+```bash
+# Install dependencies
+npm install
 
-- 모든 데이터는 `~/.openclaw/data/personal-claw/`에 저장
-- 대화 원문은 저장하지 않음 (신호만 기록)
-- 외부 서버로 데이터 전송 없음
-- 언제든지 `personal-claw-reset`으로 초기화 가능
-- `personal-claw-export`로 백업 가능
+# Run tests
+npm test
+
+# Watch mode
+npm run test:watch
+
+# Type check
+npm run typecheck
+
+# Build
+npm run build
+
+# Lint
+npm run lint
+```
+
+### Project conventions
+
+- All profile update functions use immutable patterns (return new objects)
+- Signals are detected via regex patterns (no LLM calls for detection)
+- Profile data is stored as JSON in `~/.openclaw/data/personal-claw/`
+- AGENTS.md is updated on session end for long-term context
+
+---
+
+## Privacy
+
+- **100% local** — no data leaves your machine
+- Conversation content is never stored — only extracted signals and profile values
+- No external API calls for learning or personalization
+- Reset anytime with `personal-claw-reset`
+- Export anytime with `personal-claw-export` to inspect stored data
 
 ---
 
 ## FAQ
 
-**Q: 학습까지 얼마나 걸리나요?**
-A: 20~30개 메시지 교환 후 Phase 2(A/B 수집)로 진입합니다. 빠르면 하루, 느리면 일주일이면 프로필이 수렴됩니다.
+**How long until it adapts?**
+~20 messages to enter Phase 2, ~10 more choices to build a reliable profile. Typically 1-3 days of normal use.
 
-**Q: 잘못 학습하면 어떻게 하나요?**
-A: "짧게 해줘", "자세히 설명해줘"라고 직접 말하면 즉시 반영됩니다. 또는 `personal-claw-reset`으로 초기화할 수 있습니다.
+**What if it learns wrong?**
+Say "be concise" or "explain more" — explicit directives override immediately. Or use `personal-claw-reset` to start fresh.
 
-**Q: 여러 채널에서 사용하면?**
-A: 현재는 공유 프로필입니다. 향후 채널별 프로필을 지원할 예정입니다.
+**Does it work across channels?**
+Currently a shared profile across all channels. Per-channel profiles planned.
 
-**Q: 다른 언어도 지원하나요?**
-A: 한국어와 영어를 모두 지원합니다. 대화 언어를 자동 감지합니다.
+**Performance impact?**
+Signal detection is regex-based, completes in <50ms. Memory usage is a few KB per profile. Negligible overhead.
 
-**Q: CPU/메모리를 많이 사용하나요?**
-A: 아닙니다. 신호 분석은 정규식 기반으로 50ms 이내에 완료됩니다. 메모리 사용량도 수 KB 수준입니다.
-
----
-
-## 개발
-
-소스 코드: [GitHub](https://github.com/your-repo/openclaw-personal-claw)
-
-```bash
-git clone https://github.com/your-repo/openclaw-personal-claw.git
-cd openclaw-personal-claw
-npm install
-npm run build
-npm test
-```
+**What OpenClaw version is required?**
+>= 2026.3.0 (plugin hook system required)
 
 ---
 
-## 라이선스
+## License
 
 MIT
