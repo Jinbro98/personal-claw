@@ -218,6 +218,18 @@ npm run lint
 
 ---
 
+## 멀티 에이전트 지원
+
+각 에이전트는 독립적으로 학습합니다. 프로필 데이터는 각 에이전트의 워크스페이스 아래에 저장됩니다:
+
+```
+~/.openclaw/workspace/.personal-claw/           ← main 에이전트
+~/.openclaw/workspace-kiwi/.personal-claw/      ← kiwi 에이전트
+~/.openclaw/workspace-strawberry/.personal-claw/  ← strawberry 에이전트
+```
+
+에이전트 간 공유 상태 없음. 각자 대화를 기반으로 독립적인 사용자 프로필을 형성합니다.
+
 ## 프라이버시
 
 - **100% 로컬** — 외부로 데이터 전송 없음
@@ -225,6 +237,7 @@ npm run lint
 - 학습/개인화에 외부 API 호출 없음
 - `personal-claw-reset`으로 언제든지 초기화 가능
 - `personal-claw-export`로 저장된 데이터 직접 확인 가능
+- 에이전트별 데이터 격리 — 각 에이전트의 프로필은 독립적
 
 ---
 

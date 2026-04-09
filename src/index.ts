@@ -4,8 +4,12 @@
  * Adaptive personalization through conversation analysis.
  * Integrates signal detection, Thompson Sampling bandit,
  * phase-gated learning, and AGENTS.md injection.
+ *
+ * Profile data is stored per-agent under <workspace>/.personal-claw/
+ * so each agent learns independently.
  */
 
+import { join } from 'node:path';
 import type { PluginContext, PluginResult } from './types.js';
 
 // Core modules
@@ -31,14 +35,15 @@ import { resetProfile } from './tools/reset-tool.js';
 import { exportProfile } from './tools/export-tool.js';
 
 export default async function personalClawPlugin(context: PluginContext): Promise<PluginResult> {
-  const dataDir = context.getDataDir();
+  // Per-agent data directory: <workspace>/.personal-claw/
   const workspaceDir = context.getWorkspaceDir();
+  const dataDir = join(workspaceDir, '.personal-claw');
   const sessionState = new SessionState(); // 세션 상태
   let abSuggestedThisSession = false; // 세션당 A/B 제안 1회 제한
 
   return {
     name: 'personal-claw',
-    version: '2.0.0',
+    version: '2.1.0',
     description: 'Adaptive personalization through conversation analysis',
 
     tools: [

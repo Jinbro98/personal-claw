@@ -219,6 +219,18 @@ npm run lint
 
 ---
 
+## Multi-Agent Support
+
+Each agent learns independently. Profile data is stored under each agent's workspace:
+
+```
+~/.openclaw/workspace/.personal-claw/         ← main agent
+~/.openclaw/workspace-kiwi/.personal-claw/    ← kiwi agent
+~/.openclaw/workspace-strawberry/.personal-claw/  ← strawberry agent
+```
+
+No shared state between agents. Each develops its own user profile based on its conversations.
+
 ## Privacy
 
 - **100% local** — no data leaves your machine
@@ -226,6 +238,7 @@ npm run lint
 - No external API calls for learning or personalization
 - Reset anytime with `personal-claw-reset`
 - Export anytime with `personal-claw-export` to inspect stored data
+- Per-agent data isolation — each agent's profile is independent
 
 ---
 
