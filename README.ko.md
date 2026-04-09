@@ -75,15 +75,14 @@ personal-claw는 대화 주제를 감지하고 별도의 선호 프로필을 유
 - [OpenClaw](https://docs.openclaw.ai) >= 2026.3.0
 - Node.js >= 22.0.0
 
-### CLI로 설치
+### 설치
 
 ```bash
-openclaw plugins install Jinbro98/openclaw-personal-claw
-```
-
-설치 후 게이트웨이를 재시작합니다:
-
-```bash
+git clone https://github.com/Jinbro98/openclaw-personal-claw.git
+cd openclaw-personal-claw
+npm install
+npm run build
+openclaw plugins install .
 openclaw gateway restart
 ```
 
@@ -96,16 +95,7 @@ openclaw skills list | grep personal-claw
 
 예상 출력: `loaded` (플러그인) 및 `ready` (스킬).
 
-### 소스에서 설치
-
-```bash
-git clone https://github.com/Jinbro98/openclaw-personal-claw.git
-cd openclaw-personal-claw
-npm install
-npm run build
-openclaw plugins install .
-openclaw gateway restart
-```
+> **참고:** OpenClaw는 `plugins install <github-user>/<repo>` 형식을 지원하지 않습니다. 반드시 clone 후 로컬 경로에서 설치해야 합니다.
 
 ---
 

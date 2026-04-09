@@ -76,15 +76,14 @@ Example: you might prefer detailed code explanations but concise general answers
 - [OpenClaw](https://docs.openclaw.ai) >= 2026.3.0
 - Node.js >= 22.0.0
 
-### Install via CLI
+### Install
 
 ```bash
-openclaw plugins install Jinbro98/openclaw-personal-claw
-```
-
-Restart the gateway after installation:
-
-```bash
+git clone https://github.com/Jinbro98/openclaw-personal-claw.git
+cd openclaw-personal-claw
+npm install
+npm run build
+openclaw plugins install .
 openclaw gateway restart
 ```
 
@@ -97,16 +96,7 @@ openclaw skills list | grep personal-claw
 
 Expected output: `loaded` (plugin) and `ready` (skill).
 
-### Install from source
-
-```bash
-git clone https://github.com/Jinbro98/openclaw-personal-claw.git
-cd openclaw-personal-claw
-npm install
-npm run build
-openclaw plugins install .
-openclaw gateway restart
-```
+> **Note:** OpenClaw does not support `plugins install <github-user>/<repo>` directly. You must clone and install from a local path.
 
 ---
 
